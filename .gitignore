@@ -268,3 +268,6 @@ __pycache__/
 
 # hide modules
 **/package-lock.json
+
+# hide modules
+**/MyApp.Web/Areas
