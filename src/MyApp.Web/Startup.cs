@@ -2,25 +2,36 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using MyApp.Web.Boots;
 
 namespace MyApp.Web
 {
     public class Startup
     {
+        private readonly ILogger<Startup> _logger;
+        private readonly IHostingEnvironment _env;
+
+        public Startup(ILogger<Startup> logger, IHostingEnvironment env)
+        {
+            _logger = logger;
+            _env = env;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             var mvcBuilder = services.AddMvc();
             mvcBuilder.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseStaticFiles();
+            app.UseMyStaticFiles(_env, _logger);
             
             //do not forget to add[Area("Foo")] in controllers of area
             app.UseMvc(routes =>
