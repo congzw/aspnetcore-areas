@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyApp.Common\MyApp.Common.csproj" />
+    <ProjectReference Include="..\MyApp.Web.Areas\Demo\Demo.csproj" />
   </ItemGroup>
 
 </Project>
