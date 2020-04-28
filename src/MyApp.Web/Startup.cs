@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MyApp.Common.Modules.Extensions;
 using MyApp.Web.Boots;
 
 namespace MyApp.Web
@@ -20,14 +21,10 @@ namespace MyApp.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMyModules();
+
             var mvcBuilder = services.AddMvc();
-
-            //services.AddRazorPages(opt => opt.RootDirectory = "/")
-            //    .AddRazorRuntimeCompilation(
-            //        opt => { opt.FileProviders.Add(new PhysicalFileProvider(WebRoot)); });
-
-            //mvcBuilder.AddApplicationPart(typeof(DemoHelper).Assembly);
-
+            mvcBuilder.AddMyModulePart();
             mvcBuilder.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
