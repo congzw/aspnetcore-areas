@@ -21,7 +21,7 @@ namespace MyApp.Web
         public void ConfigureServices(IServiceCollection services)
         {
             var mvcBuilder = services.AddMvc();
-            
+
             //services.AddRazorPages(opt => opt.RootDirectory = "/")
             //    .AddRazorRuntimeCompilation(
             //        opt => { opt.FileProviders.Add(new PhysicalFileProvider(WebRoot)); });
