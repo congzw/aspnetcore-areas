@@ -21,7 +21,19 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyApp.Common\MyApp.Common.csproj" />
-    <ProjectReference Include="..\MyApp.Web.Areas\Demo\Demo.csproj" />
+    <ProjectReference Include="..\MyApp.Web.Areas\Demo\MyApp.Web.Areas.Demo.csproj" />
   </ItemGroup>
 
+  <Target Name="CopyAreaFiles">
+    <ItemGroup>
+      <MyCopyAreaFiles Include="$(SolutionDir)\MyApp.Web.Areas\**\Content\**\*.*" />
+      <MyCopyAreaFiles Include="$(SolutionDir)\MyApp.Web.Areas\**\Views\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(MyCopyAreaFiles)" DestinationFiles="@(MyCopyAreaFiles->'$(SolutionDir)\MyApp.Web\Areas\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Message Text="----CopyAreaFiles完成----" Importance="high" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <CallTarget Targets="CopyAreaFiles" />
+  </Target>
 </Project>
