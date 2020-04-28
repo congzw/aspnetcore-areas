@@ -1,3 +1,8 @@
-# todo
+# aspnetcore-areas
 
-## todo list
+a simple solution for separate area projects development.
+
+## change list
+
+- 
+- 20201428 init projects
