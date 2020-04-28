@@ -9,6 +9,7 @@ a simple solution for separate area projects development.
 - todo add multi tanent support
 - todo add multi site support
 - todo add theme support
+- 20201428 add menu demos
 - 20201428 add area copy target in main web
 - 20201428 add area di demos
 - 20201428 init projects

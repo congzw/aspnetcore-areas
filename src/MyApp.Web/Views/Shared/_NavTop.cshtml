@@ -1,8 +1,12 @@
-﻿<ul>
+﻿@inject MenuContext MenuContext
+<ul>
     <li>
         <a asp-area="" asp-controller="Home" asp-action="Index">Root</a>
     </li>
-    <li>
-        <a asp-area="Demo" asp-controller="Home" asp-action="Index">Demo</a>
-    </li>
+    @foreach (var item in MenuContext.Menus)
+    {
+        <li>
+            <a href="@item.Href" id="@item.Key">@item.Text</a>
+        </li>
+    }
 </ul>

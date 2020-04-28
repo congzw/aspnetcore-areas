@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using MyApp.Common.Modules;
+using MyApp.Domain.Menus;
 using MyApp.Web.Areas.Demo.Domain;
 
 namespace MyApp.Web.Areas.Demo
@@ -14,6 +15,8 @@ namespace MyApp.Web.Areas.Demo
             services.AddSingleton<IFooSingleton, FooService>();
             services.AddScoped<IFooScoped, FooService>();
             services.AddTransient<IFooTransient, FooService>();
+            
+            services.AddSingleton<IMenuProvider, DemoMenuProvider>();
         }
 
         public void Configure(IApplicationBuilder builder)
