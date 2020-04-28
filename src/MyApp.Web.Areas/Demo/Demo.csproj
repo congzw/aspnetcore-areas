@@ -9,11 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Areas\Demo\Views\Home\DiTest.cshtml" />
     <None Remove="Areas\Demo\Views\Home\Index.cshtml" />
     <None Remove="Areas\Demo\Views\_ViewStart.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Areas\Demo\Views\Home\DiTest.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="Areas\Demo\Views\Home\Index.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using MyApp.Common.Modules;
+using MyApp.Web.Areas.Demo.Domain;
 
 namespace MyApp.Web.Areas.Demo
 {
@@ -10,6 +11,9 @@ namespace MyApp.Web.Areas.Demo
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IFooSingleton, FooService>();
+            services.AddScoped<IFooScoped, FooService>();
+            services.AddTransient<IFooTransient, FooService>();
         }
 
         public void Configure(IApplicationBuilder builder)
