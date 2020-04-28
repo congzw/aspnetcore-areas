@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyApp.Common\MyApp.Common.csproj" />
-    <ProjectReference Include="..\MyApp.Web.Areas.Demo\MyApp.Web.Areas.Demo.csproj" />
   </ItemGroup>
 
 </Project>
