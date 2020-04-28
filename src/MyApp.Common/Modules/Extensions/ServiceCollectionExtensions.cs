@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using MyApp.Common.Modules.Impl;
 
 namespace MyApp.Common.Modules.Extensions
 {
@@ -16,11 +15,14 @@ namespace MyApp.Common.Modules.Extensions
                 throw new ArgumentNullException(nameof(services));
             }
 
+            var helper = ModuleStartupHelper.Instance;
+            services.AddSingleton(helper);
+
             var contextInterfaceType = typeof(IModuleServiceContext);
             var context = services.LastOrDefault(d => d.ServiceType == contextInterfaceType)?.ImplementationInstance as IModuleServiceContext;
             if (context == null)
             {
-                context = new ModuleServiceContext()
+                context = new DefaultModuleServiceContext()
                 {
                     ApplicationServices = services
                 };
@@ -32,11 +34,11 @@ namespace MyApp.Common.Modules.Extensions
             
             if (assemblies == null)
             {
-                assemblies = MyModuleHelper.Instance.GetAssemblies();
+                assemblies = helper.GetAssemblies();
             }
             else
             {
-                MyModuleHelper.Instance.GetAssemblies = () => assemblies;
+                helper.GetAssemblies = () => assemblies;
             }
             services.AddAllModuleStartup(assemblies);
             
@@ -54,7 +56,7 @@ namespace MyApp.Common.Modules.Extensions
         
         public static IMvcBuilder AddMyModulePart(this IMvcBuilder mvcBuilder)
         {
-            MyModuleHelper.Instance.AddApplicationPart(mvcBuilder);
+            ModuleStartupHelper.Instance.AddApplicationPart(mvcBuilder);
             return mvcBuilder;
         }
 

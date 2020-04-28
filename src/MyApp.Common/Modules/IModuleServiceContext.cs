@@ -6,4 +6,9 @@ namespace MyApp.Common.Modules
     {
         IServiceCollection ApplicationServices { get; set; }
     }
+
+    public class DefaultModuleServiceContext : IModuleServiceContext
+    {
+        public IServiceCollection ApplicationServices { get; set; }
+    }
 }

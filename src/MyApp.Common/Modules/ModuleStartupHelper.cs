@@ -6,13 +6,12 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
-using MyApp.Common.Modules.Impl;
 
 namespace MyApp.Common.Modules
 {
-    public class MyModuleHelper
+    public class ModuleStartupHelper
     {
-        public MyModuleHelper()
+        public ModuleStartupHelper()
         {
             LoadContext = AssemblyLoadContext.Default;
             GetAssemblies = () => GetModuleAssemblies(AppDomain.CurrentDomain.BaseDirectory);
@@ -56,7 +55,7 @@ namespace MyApp.Common.Modules
             return loadResult;
         }
 
-        public static MyModuleHelper Instance = new MyModuleHelper();
+        public static ModuleStartupHelper Instance = new ModuleStartupHelper();
         private IList<Assembly> GetModuleAssemblies(string root, string modulePrefix = null)
         {
             if (string.IsNullOrWhiteSpace(modulePrefix))
@@ -100,7 +99,7 @@ namespace MyApp.Common.Modules
         }
         private static string TryGetPrefix()
         {
-            var ns = typeof(ModuleServiceContext).Namespace;
+            var ns = typeof(DefaultModuleServiceContext).Namespace;
             if (ns != null)
             {
                 var modulePrefix = ns.Split(".").FirstOrDefault();
