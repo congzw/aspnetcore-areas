@@ -40,8 +40,14 @@
     <Copy SourceFiles="@(MyCopyAreaFiles)" DestinationFiles="@(MyCopyAreaFiles->'$(SolutionDir)\MyApp.Web\Areas\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Message Text="----CopyAreaFiles完成----" Importance="high" />
   </Target>
+  
+  <!--fix vs call "CopyAreaFiles" failed because iis lock problems-->
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Touch Files="App_Offline.htm" AlwaysCreate="true" />
+  </Target>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Delete Files="App_Offline.htm" />
     <CallTarget Targets="CopyAreaFiles" />
   </Target>
 

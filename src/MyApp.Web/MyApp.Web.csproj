@@ -30,8 +30,9 @@
       <MyCopyAreaFiles Include="$(SolutionDir)\MyApp.Web.Areas\**\Content\**\*.*" />
       <MyCopyAreaFiles Include="$(SolutionDir)\MyApp.Web.Areas\**\Views\**\*.*" />
     </ItemGroup>
+    <Message Text="----CopyAreaFiles Start For '$(Configuration)|$(Platform)|$(RunPublish)'----" Importance="high" />
     <Copy SourceFiles="@(MyCopyAreaFiles)" DestinationFiles="@(MyCopyAreaFiles->'$(SolutionDir)\MyApp.Web\Areas\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Message Text="----CopyAreaFiles完成----" Importance="high" />
+    <Message Text="----CopyAreaFiles Finished----" Importance="high" />
   </Target>
 
   <!--fix vs call "CopyAreaFiles" failed because iis lock problems-->
