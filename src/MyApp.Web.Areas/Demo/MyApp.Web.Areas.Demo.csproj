@@ -11,6 +11,7 @@
   <ItemGroup>
     <None Remove="Views\Home\DiTest.cshtml" />
     <None Remove="Views\Home\Index.cshtml" />
+    <None Remove="Views\_ViewImports.cshtml" />
     <None Remove="Views\_ViewStart.cshtml" />
   </ItemGroup>
 
@@ -19,6 +20,9 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Views\Home\Index.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Views\_ViewImports.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Views\_ViewStart.cshtml">

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Common Home Index";
+    ViewBag.Title = "Demo Home Index";
 }
-<link href="~/Areas/Demo/Content/css/foo.css" rel="stylesheet" />
+<link href="@Url.AreaContent("~/Content/css/foo.css", "Demo")" rel="stylesheet" />
 <h2>@this.Path</h2>
