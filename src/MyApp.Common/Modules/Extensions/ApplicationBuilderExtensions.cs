@@ -15,6 +15,8 @@ namespace MyApp.Common.Modules.Extensions
             {
                 startup.Configure(app);
             }
+
+            configure?.Invoke(app);
             return app;
         }
     }
