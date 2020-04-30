@@ -5,7 +5,7 @@ using MyApp.Domain.Menus;
 using MyApp.Web.Areas.Demo.Libs.AppServices;
 using MyApp.Web.Areas.Demo.Libs.Domain;
 
-namespace MyApp.Web.Areas.Demo.Libs
+namespace MyApp.Web.Areas.Demo.Libs.Boots
 {
     public class DemoStartup : IModuleStartup
     {
