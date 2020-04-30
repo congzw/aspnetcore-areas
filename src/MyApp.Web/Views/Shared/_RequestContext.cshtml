@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNetCore.Html
+@using MyApp.Common.Contexts
+@{
+    var myRequestContext = this.Context.GetMyRequestContext();
+}
+@{
+    //todo net core 3 : a Razor code block.
+    Func<String, IHtmlContent> demoTemplate = @<div>Say @item</div>;
+}
+
+<hr />
+<ul>
+    <li>
+        <a href="~/Home/Index">~/Home/Index</a>
+    </li>
+    <li>
+        <a href="~/Demo/Home/Index">~/Demo/Home/Index</a>
+    </li>
+    <li>
+        <a href="~/Foo/Demo/Home/Index">~/Foo/Demo/Home/Index</a>
+    </li>
+    <li>
+        <a href="~/Bar/Demo/Home/Index">~/Bar/Demo/Home/Index</a>
+    </li>
+    <li>
+        <a href="~/Bar/Demo/Home/Index?site=abc">~/Bar/Demo/Home/Index?site=abc</a>
+    </li>
+    <li>
+        <a href="~/Bar/Demo/Home/Index?site=abc&user=admin">~/Bar/Demo/Home/Index?site=abc&user=allen</a>
+    </li>
+    <li>
+        <a href="~/Space/Admin/Home/Index?site=abc&user=allen&foo=whatever">~/Space/Admin/Home/Index?site=abc&user=allen&foo=whatever</a>
+    </li>
+</ul>
+<hr />
+
+<ul>
+    @foreach (var group in myRequestContext.Groups)
+    { 
+        <li>
+           @group.GroupName: <span>@group.Items.Count</span>
+           <ol>
+               @foreach (var item in group.Items)
+               {
+                   <li>
+                       @item.Key: <span style="color: red">@item.Value</span>
+                   </li>
+               }
+           </ol>
+       </li>
+    }
+</ul>

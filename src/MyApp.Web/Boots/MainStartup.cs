@@ -40,13 +40,54 @@ namespace MyApp.Web.Boots
             //do not forget to add[Area("Foo")] in controllers of area
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
-                    name: "areas",
-                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                //:exists => applies KnownRouteValueConstraint on the route.
+                //It makes the route only matches if an action is found with a corresponding route value.
+                //Meaning it will only match the route if it targets an existing area in the case of { area: exists}.
+                //for more => https://github.com/aspnet/Mvc/blob/rel/2.0.0/src/Microsoft.AspNetCore.Mvc.Core/Routing/KnownRouteValueConstraint.cs
 
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    name: "route_space",
+                    template: "Space/{user}/{controller}/{action}/{id?}",
+                    defaults: new { site = (string)null },
+                    constraints: null,
+                    dataTokens: new
+                    {
+                        route = "route_space",
+                        area = "space"
+                    });
+
+
+                routes.MapRoute(
+                    name: "route_site_area",
+                    template: "{site}/{area:exists}/{controller}/{action}/{id?}",
+                    defaults: new { site = "default", user = (string)null },
+                    constraints: null,
+                    dataTokens: new
+                    {
+                        route = "route_site_area"
+                    });
+
+                routes.MapRoute(
+                    name: "route_area",
+                    template: "{area:exists}/{controller}/{action}/{id?}",
+                    defaults: new { site = "default", user = (string)null },
+                    constraints: null,
+                    dataTokens: new
+                    {
+                        route = "route_area"
+                    });
+
+                //todo redirect default "/" by config from HomeController
+                routes.MapRoute(
+                    name: "route_root",
+                    template: "{controller=Home}/{action=Index}/{id?}",
+                    defaults: new { site = "default", user = (string)null},
+                    constraints: null,
+                    dataTokens: new
+                    {
+                        route = "route_root",
+                        area = (string)null
+                    });
             });
         }
     }
