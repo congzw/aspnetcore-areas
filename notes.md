@@ -53,13 +53,14 @@
 
   ```
 
-## route conventions
+## api route conventions
   
 - root_api: "Api/{Controller}/{Action}"
 - area_api: "Api/{Area}/{Controller}/{Action}"
-- space_api: "Api/Space/{Controller}/{Action}" (same as area_api)
+
+## view route conventions
  
-- route_space: "Space/{user}/{controller}/{action}/{id?}",
-- route_site_area: "{site}/{area:exists}/{controller}/{action}/{id?}",
-- route_area:"{area:exists}/{controller}/{action}/{id?}",
-- route_root:"{controller=Home}/{action=Index}/{id?}",
+- route_space: "Space/{user}/{controller}/{action}/{id?}"
+- route_site_area: "{site}/{area:exists}/{controller}/{action}/{id?}"
+- route_area:"{area:exists}/{controller}/{action}/{id?}"
+- route_root:"{controller=Home}/{action=Index}/{id?}"
