@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MyApp.Web.Areas.Demo.Domain
+namespace MyApp.Web.Areas.Demo.Libs.AppServices
 {
     public interface IFooSingleton
     {

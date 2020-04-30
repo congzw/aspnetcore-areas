@@ -2,9 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using MyApp.Common.Modules;
 using MyApp.Domain.Menus;
-using MyApp.Web.Areas.Demo.Domain;
+using MyApp.Web.Areas.Demo.Libs.AppServices;
+using MyApp.Web.Areas.Demo.Libs.Domain;
 
-namespace MyApp.Web.Areas.Demo
+namespace MyApp.Web.Areas.Demo.Libs
 {
     public class DemoStartup : IModuleStartup
     {

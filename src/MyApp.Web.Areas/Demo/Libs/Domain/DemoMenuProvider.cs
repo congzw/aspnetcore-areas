@@ -1,6 +1,6 @@
 ﻿using MyApp.Domain.Menus;
 
-namespace MyApp.Web.Areas.Demo.Domain
+namespace MyApp.Web.Areas.Demo.Libs.Domain
 {
     public class DemoMenuProvider : IMenuProvider
     {

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyApp.Web.Areas.Demo.Domain;
 
 namespace MyApp.Web.Areas.Demo.Controllers
 {
