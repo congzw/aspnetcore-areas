@@ -6,6 +6,12 @@ namespace MyApp.Web.Apis
     [Route("Api/Test")]
     public class TestApiController : ControllerBase
     {
+        [HttpGet("GetDate")]
+        public DateTime GetDate()
+        {
+            return DateTime.Now;
+        }
+
         /// <summary>
         /// 获取Api描述
         /// </summary>
