@@ -39,6 +39,8 @@
             this.txtAreaName = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.txtProjectPrefix = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.groupBox3.SuspendLayout();
@@ -69,7 +71,7 @@
             this.groupBox2.Controls.Add(this.checkOpenDir);
             this.groupBox2.Controls.Add(this.btnOk);
             this.groupBox2.Controls.Add(this.btnCancel);
-            this.groupBox2.Location = new System.Drawing.Point(12, 155);
+            this.groupBox2.Location = new System.Drawing.Point(12, 181);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(460, 54);
             this.groupBox2.TabIndex = 36;
@@ -94,7 +96,7 @@
             // 
             // txtDesc
             // 
-            this.txtDesc.Location = new System.Drawing.Point(123, 47);
+            this.txtDesc.Location = new System.Drawing.Point(123, 74);
             this.txtDesc.Multiline = true;
             this.txtDesc.Name = "txtDesc";
             this.txtDesc.Size = new System.Drawing.Size(285, 70);
@@ -104,7 +106,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(70, 50);
+            this.label4.Location = new System.Drawing.Point(70, 77);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(41, 12);
             this.label4.TabIndex = 42;
@@ -128,22 +130,40 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.txtProjectPrefix);
+            this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.txtDesc);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.txtAreaName);
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Location = new System.Drawing.Point(12, 17);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(460, 123);
+            this.groupBox3.Size = new System.Drawing.Size(460, 158);
             this.groupBox3.TabIndex = 38;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "输入区";
+            // 
+            // txtProjectPrefix
+            // 
+            this.txtProjectPrefix.Location = new System.Drawing.Point(123, 47);
+            this.txtProjectPrefix.Name = "txtProjectPrefix";
+            this.txtProjectPrefix.Size = new System.Drawing.Size(285, 21);
+            this.txtProjectPrefix.TabIndex = 45;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(46, 50);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(65, 12);
+            this.label1.TabIndex = 46;
+            this.label1.Text = "项目前缀：";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 221);
+            this.ClientSize = new System.Drawing.Size(489, 246);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox3);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -171,7 +191,8 @@
         private System.Windows.Forms.TextBox txtAreaName;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox checkOpenDir;
-
+        private System.Windows.Forms.TextBox txtProjectPrefix;
+        private System.Windows.Forms.Label label1;
     }
 }
 

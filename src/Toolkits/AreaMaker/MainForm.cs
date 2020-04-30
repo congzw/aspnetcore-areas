@@ -18,6 +18,7 @@ namespace AreaMaker
         private string dirPath;
         private void MainForm_Load(object sender, EventArgs e)
         {
+            this.txtProjectPrefix.Text = _areaService.ProjectPrefix;
             var rootPath = _areaService.GetRootPath();
             templateName = _areaService.TemplateName;
             dirPath = _areaService.GetTemplateFolderPath(rootPath, null);

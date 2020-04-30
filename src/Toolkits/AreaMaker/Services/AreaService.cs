@@ -8,6 +8,7 @@ namespace AreaMaker.Services
     public interface IAreaService
     {
         string TemplateName { get; set; }
+        string ProjectPrefix { get; set; }
         string GetRootPath();
         string GetTemplateFolderPath(string rootPath, string template);
         MessageResult ValidateTemplateFolder(string templateFolderPath);
@@ -28,9 +29,11 @@ namespace AreaMaker.Services
         public AreaService()
         {
             TemplateName = "_template";
+            ProjectPrefix = "MyApp.Web.Areas.";
         }
 
         public string TemplateName { get; set; }
+        public string ProjectPrefix { get; set; }
 
         public string GetRootPath()
         {
