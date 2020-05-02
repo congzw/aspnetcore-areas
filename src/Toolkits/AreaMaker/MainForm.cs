@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using AreaMaker.Common;
 using AreaMaker.Services;
 
 namespace AreaMaker
@@ -13,26 +14,21 @@ namespace AreaMaker
             _areaService = areaService;
             InitializeComponent();
         }
-        
-        private string templateName = "_template";
-        private string dirPath;
+
+        private TemplateConfig _templateConfig = null;
+        private string templateDir;
         private void MainForm_Load(object sender, EventArgs e)
         {
-            this.txtProjectPrefix.Text = _areaService.ProjectPrefix;
-            var rootPath = _areaService.GetRootPath();
-            templateName = _areaService.TemplateName;
-            dirPath = _areaService.GetTemplateFolderPath(rootPath, null);
-            var vr = _areaService.ValidateTemplateFolder(dirPath);
+            _templateConfig = _areaService.GetTemplateConfig();
+            var areaConfig = _areaService.GetAreaConfig();
+            this.txtAreaName.Text = areaConfig.Area;
+            this.txtProjectPrefix.Text = areaConfig.ProjectPrefix;
+
+            templateDir = MyIOHelper.MakeSubFolderPath(AppDomain.CurrentDomain.BaseDirectory, _templateConfig.AreaPlaceHolder);
+            var vr = _areaService.ValidateTemplateFolder(templateDir);
             if (!vr.Success)
             {
                 MessageBox.Show(vr.Message);
-                this.Close();
-            }
-
-            var autoFixTemplate = _areaService.AutoFixTemplate(dirPath);
-            if (!autoFixTemplate.Success)
-            {
-                MessageBox.Show(autoFixTemplate.Message);
                 this.Close();
             }
         }
@@ -40,6 +36,7 @@ namespace AreaMaker
         private void btnOk_Click(object sender, EventArgs e)
         {
             string areaName = this.txtAreaName.Text.Trim();
+            string projectPrefix = this.txtProjectPrefix.Text.Trim();
 
             var result = _areaService.ValidateAreaName(areaName);
             if (!result.Success)
@@ -48,8 +45,13 @@ namespace AreaMaker
                 return;
             }
 
-            var messageResult = _areaService.CreateArea(new CreateAreaModel()
-                {AreaName = areaName, TemplateFolderPath = dirPath, TemplateName = templateName});
+            var createAreaArgs = new CreateAreaArgs()
+            {
+                ProjectPrefix = projectPrefix,
+                Area = areaName,
+                TemplateFolderPath = templateDir
+            };
+            var messageResult = _areaService.CreateArea(_templateConfig, createAreaArgs);
 
             if (!messageResult.Success)
             {

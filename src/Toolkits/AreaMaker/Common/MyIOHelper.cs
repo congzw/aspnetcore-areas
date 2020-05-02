@@ -68,6 +68,15 @@ namespace AreaMaker.Common
             }
         }
 
+        public static void PrepareSubFolder(string folderPath, string subName)
+        {
+            var newFolder = MakeSubFolderPath(folderPath, subName);
+            if (Directory.Exists(newFolder))
+            {
+                return;
+            }
+            Directory.CreateDirectory(newFolder);
+        }
         /// <summary>
         /// 链接两个路径，自动处理路径后面的\\
         /// </summary>
@@ -77,7 +86,8 @@ namespace AreaMaker.Common
         public static string MakeSubFolderPath(string folderPath, string subFolderName)
         {
             string tempFolder = folderPath.TrimEnd('\\');
-            string newFolder = string.Format("{0}\\{1}", tempFolder, subFolderName);
+            string subName = subFolderName.TrimStart('\\').TrimStart('/').Replace('/', '\\');
+            var newFolder = Path.Combine(tempFolder, subName);
             return newFolder;
         }
 
@@ -315,45 +325,6 @@ namespace AreaMaker.Common
             return File.ReadAllText(path);
         }
 
-        //没有目录，尝试自动创建
-        //并且递归修改现有写权限
-        public static bool TrySaveFileWithAddAccessRule(string filePath, string content, Encoding encoding, out string message)
-        {
-            message = "保存失败";
-            bool result = false;
-            try
-            {
-                string dirPath = Path.GetDirectoryName(filePath);
-                //string dirPath = Path.GetFileNameWithoutExtension(filePath);
-                if (!Directory.Exists(dirPath))
-                {
-                    Directory.CreateDirectory(dirPath);
-                }
-                //修改访问权限
-                DirectoryInfo folder = new DirectoryInfo(dirPath);
-                DirectorySecurity dirsecurity = folder.GetAccessControl(AccessControlSections.All);
-                dirsecurity.AddAccessRule(new FileSystemAccessRule("Everyone", FileSystemRights.FullControl, AccessControlType.Allow));
-                folder.SetAccessControl(dirsecurity);
-
-                if (encoding == null)
-                {
-                    File.WriteAllText(filePath,content);
-                }
-                else
-                {
-                    File.WriteAllText(filePath, content, encoding);
-                }
-
-                message = "保存成功";
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                message = "保存失败。\n" + ex.Message;
-            }
-            return result;
-        }
-
         /// <summary>
         /// 没有目录，尝试自动创建
         /// </summary>
@@ -374,8 +345,14 @@ namespace AreaMaker.Common
                 {
                     Directory.CreateDirectory(dirPath);
                 }
-
-                File.WriteAllText(filePath, content, encoding);
+                if (encoding == null)
+                {
+                    File.WriteAllText(filePath, content);
+                }
+                else
+                {
+                    File.WriteAllText(filePath, content, encoding);
+                }
                 message = "保存成功";
                 result = true;
             }

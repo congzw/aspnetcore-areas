@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using AreaMaker.Common;
@@ -7,53 +8,32 @@ namespace AreaMaker.Services
 {
     public interface IAreaService
     {
-        string TemplateName { get; set; }
-        string ProjectPrefix { get; set; }
-        string GetRootPath();
-        string GetTemplateFolderPath(string rootPath, string template);
+        TemplateConfig GetTemplateConfig();
+        AreaConfig GetAreaConfig();
         MessageResult ValidateTemplateFolder(string templateFolderPath);
-        MessageResult AutoFixTemplate(string templateFolderPath);
         MessageResult ValidateAreaName(string area);
-        MessageResult CreateArea(CreateAreaModel model);
+        MessageResult CreateArea(TemplateConfig config, CreateAreaArgs args);
     }
 
-    public class CreateAreaModel
+    public class CreateAreaArgs
     {
-        public string AreaName { get; set; }
+        public string ProjectPrefix { get; set; }
+        public string Area { get; set; }
         public string TemplateFolderPath { get; set; }
-        public string TemplateName { get; set; }
     }
 
     public class AreaService : IAreaService
     {
-        public AreaService()
+        public TemplateConfig GetTemplateConfig()
         {
-            TemplateName = "_template";
-            ProjectPrefix = "MyApp.Web.Areas.";
+            //todo read by config
+            return new TemplateConfig();
         }
 
-        public string TemplateName { get; set; }
-        public string ProjectPrefix { get; set; }
-
-        public string GetRootPath()
+        public AreaConfig GetAreaConfig()
         {
-            return AppDomain.CurrentDomain.BaseDirectory;
-        }
-
-        public string GetTemplateFolderPath(string rootPath, string template)
-        {
-            if (string.IsNullOrWhiteSpace(rootPath))
-            {
-                throw new ArgumentNullException(nameof(rootPath));
-            }
-            
-
-            if (string.IsNullOrWhiteSpace(template))
-            {
-                template = TemplateName;
-            }
-
-            return Path.Combine(GetRootPath().TrimEnd('\\'), template);
+            //todo read by config
+            return new AreaConfig();
         }
 
         public MessageResult ValidateTemplateFolder(string templateFolderPath)
@@ -68,21 +48,6 @@ namespace AreaMaker.Services
             vr.Message = "OK";
             vr.Success = true;
             return vr;
-        }
-
-        public MessageResult AutoFixTemplate(string templateFolderPath)
-        {
-            UtilsLogger.LogMessage("AutoFixTemplate: " + templateFolderPath);
-            var result = new MessageResult();
-            if (!Directory.Exists(templateFolderPath))
-            {
-                result.Message = "模板不存在: " + templateFolderPath;
-                return result;
-            }
-            
-            result.Message = "OK";
-            result.Success = true;
-            return result;
         }
 
         public MessageResult ValidateAreaName(string areaName)
@@ -105,105 +70,103 @@ namespace AreaMaker.Services
             return result;
         }
 
-        public MessageResult CreateArea(CreateAreaModel model)
+        public MessageResult CreateArea(TemplateConfig config, CreateAreaArgs args)
         {
-            var result = CreateNewArea(model.AreaName, model.TemplateFolderPath, model.TemplateName);
+            if (config == null)
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+
+            if (args == null)
+            {
+                throw new ArgumentNullException(nameof(args));
+            }
+
+            var result = CreateNewArea(config.ProjectPrefixPlaceHolder,
+                config.AreaPlaceHolder,
+                config.AutoCreateFolders,
+                args.ProjectPrefix,
+                args.Area,
+                args.TemplateFolderPath);
             return result;
         }
-        
-        private MessageResult CreateNewArea(string areaName, string dirPath, string templateName)
+
+        private MessageResult CreateNewArea(string projectPrefixPlaceHolder, string areaPlaceHolder, IList<string> autoCreateFolders, string projectPrefix, string areaName, string templateFolderPath)
         {
-            var result = new MessageResult();
-            string outPutDir = dirPath.Replace(templateName, areaName);
-            if (Directory.Exists(outPutDir))
+            if (string.IsNullOrWhiteSpace(projectPrefix))
             {
-                result.Message = string.Format("要创建的路径{0}\r\n处已经有一个同名模块，请确认！", outPutDir);
+                throw new ArgumentNullException(nameof(projectPrefix));
+            }
+
+            if (string.IsNullOrWhiteSpace(areaName))
+            {
+                throw new ArgumentNullException(nameof(areaName));
+            }
+
+            if (string.IsNullOrWhiteSpace(templateFolderPath))
+            {
+                throw new ArgumentNullException(nameof(templateFolderPath));
+            }
+            //生成思路：
+            //1 将{{Area}}文件夹Copy一份，重命名为新的Area名称
+            //2 检测并保证有几个空目录
+            //    Content/css
+            //    Content/scripts
+            //3 修改如下：
+            //    替换文本:
+            //        替换{{ProjectPrefix}}
+            //        替换{{Area}}
+            //    替换文件名
+            //        替换{{ProjectPrefix}}
+            //        替换{{Area}}
+
+            var result = new MessageResult();
+            string areaDir = templateFolderPath.Replace(areaPlaceHolder, areaName);
+            if (Directory.Exists(areaDir))
+            {
+                result.Message = string.Format("要创建的路径{0}\r\n处已经有一个同名模块，请确认！", areaDir);
                 return result;
             }
 
             try
             {
-                //生成思路：
-                //1 将Xxx文件夹Copy一份，重命名为新的Area名称，以FTC为例子
-                //2 检测并保证有几个空目录
-                //    Content
-                //    Controllers
-                //    ViewModels
-                //3 修改如下：
-                //    替换Properties\AssemblyInfo.cs
-                //        替换Web.Areas.Xxx为新的Web.Areas.FTC
-                //        替换{新的GUID}为新的guid
-                //    替换XxxAreaRegistration.cs
-                //        替换Xxx为FTC
-                //    替换ZQNB.Web.Areas.Xxx.csproj
-                //        替换{新的GUID}为NewGUID
-                //        替换Xxx为FTC
-                //    改名
-                //        修改文件名XxxAreaRegistration.cs为TTCAreaRegistration.cs
-                //        修改文件名ZQNB.Web.Areas.Xxx.csproj为ZQNB.Web.Areas.FTC.csproj	
-
-                const string guidPlaceHolder = "新的GUID";
                 string message = "";
 
-                MyIOHelper.CopyFolder(dirPath, outPutDir);
+                MyIOHelper.CopyFolder(templateFolderPath, areaDir);
 
-                string contentFolder = string.Format("{0}\\{1}", outPutDir, "Content");
-                MyIOHelper.TryCreateFolder(contentFolder);
-                string controllersFolder = string.Format("{0}\\{1}", outPutDir, "Controllers");
-                MyIOHelper.TryCreateFolder(controllersFolder);
-                string viewModelsFolder = string.Format("{0}\\{1}", outPutDir, "ViewModels");
-                MyIOHelper.TryCreateFolder(viewModelsFolder);
+                foreach (var subFolder in autoCreateFolders)
+                {
+                    MyIOHelper.PrepareSubFolder(areaDir, subFolder);
+                }
 
-                //Properties\AssemblyInfo.cs
-                string assemblyInfoFilePath = string.Format("{0}\\Properties\\AssemblyInfo.cs", outPutDir);
-                string assemblyInfoFileContent = MyIOHelper.ReadAllText(assemblyInfoFilePath);
-                string newAssemblyInfoFileContent = assemblyInfoFileContent
-                    .Replace(templateName, areaName)
-                    .Replace(guidPlaceHolder, Guid.NewGuid().ToString("D").ToUpper());
+                var files = MyIOHelper.GetFiles(areaDir, "*.*", SearchOption.AllDirectories);
+                foreach (var file in files)
+                {
+                    string fileContent = MyIOHelper.ReadAllText(file);
+                    var saveContent = fileContent
+                        .Replace(projectPrefixPlaceHolder, projectPrefix)
+                        .Replace(areaPlaceHolder, areaName);
 
-                if (!MyIOHelper.TrySaveFileWithAddAccessRule(assemblyInfoFilePath, newAssemblyInfoFileContent, null, out message))
-                {
-                    result.Message = message;
-                    return result;
-                }
-                //XxxAreaRegistration.cs
-                string xxxAreaRegistrationFilePath = string.Format("{0}\\XxxAreaRegistration.cs", outPutDir);
-                string xxxAreaRegistrationFileContent = MyIOHelper.ReadAllText(xxxAreaRegistrationFilePath);
-                string newXxxAreaRegistrationFileContent = xxxAreaRegistrationFileContent
-                    .Replace(templateName, areaName);
-                if (!MyIOHelper.TrySaveFileWithAddAccessRule(xxxAreaRegistrationFilePath, newXxxAreaRegistrationFileContent, null, out message))
-                {
-                    result.Message = message;
-                    return result;
-                }
-                //ZQNB.Web.Areas.Xxx.csproj
-                string csprojFilePath = string.Format("{0}\\ZQNB.Web.Areas.Xxx.csproj", outPutDir);
-                string csprojFilePathContent = MyIOHelper.ReadAllText(csprojFilePath);
-                string newCsprojFilePathContent = csprojFilePathContent
-                    .Replace(templateName, areaName)
-                    .Replace(guidPlaceHolder, Guid.NewGuid().ToString("D").ToUpper());
-                if (!MyIOHelper.TrySaveFileWithAddAccessRule(csprojFilePath, newCsprojFilePathContent, null, out message))
-                {
-                    result.Message = message;
-                    return result;
-                }
-                //改名
-                string newXxxAreaRegistrationFilePath = xxxAreaRegistrationFilePath.Replace(templateName, areaName);
-                if (!MyIOHelper.TryChangeFileName(xxxAreaRegistrationFilePath, newXxxAreaRegistrationFilePath))
-                {
-                    result.Message = string.Format("change file name failed: {0} -> {1}", xxxAreaRegistrationFilePath, newXxxAreaRegistrationFilePath);
-                    return result;
-                }
-                string newCsprojFilePath = csprojFilePath.Replace(templateName, areaName);
-                if (!MyIOHelper.TryChangeFileName(csprojFilePath, newCsprojFilePath))
-                {
-                    result.Message = string.Format("change file name failed: {0} -> {1}", csprojFilePath, newCsprojFilePath);
-                    return result;
+                    if (!MyIOHelper.TrySaveFile(file, saveContent, null, out message))
+                    {
+                        result.Message = message;
+                        return result;
+                    }
+
+                    var newFile = file
+                        .Replace(projectPrefixPlaceHolder, projectPrefix)
+                        .Replace(areaPlaceHolder, areaName);
+
+                    if (!MyIOHelper.TryChangeFileName(file, newFile))
+                    {
+                        result.Message = string.Format("change file name failed: {0} -> {1}", file, newFile);
+                        return result;
+                    }
                 }
 
                 result.Success = true;
                 result.Message = "创建完毕";
-                result.Data = outPutDir;
+                result.Data = areaDir;
                 return result;
             }
             catch (Exception ex)

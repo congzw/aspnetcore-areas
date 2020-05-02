@@ -10,6 +10,7 @@ a simple solution for separate area projects development.
 - todo add multi site support
 - todo add theme support
 - todo config .pubxml for publish
+- 20200502 create area toolkit complete
 - 20201428 add menu demos
 - 20201428 add area copy target in main web
 - 20201428 add area di demos
