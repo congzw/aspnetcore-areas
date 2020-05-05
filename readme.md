@@ -4,6 +4,9 @@ a simple solution for separate area projects development.
 
 ## change list
 
+- todo common xml json convert helper
+- todo common app exceptions
+- todo common auto tasks
 - todo create toolkit for area project create and publish 
 - todo add 3 part di support
 - todo add multi tanent support
